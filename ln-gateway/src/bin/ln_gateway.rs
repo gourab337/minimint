@@ -44,8 +44,8 @@ async fn main() -> tide::Result<()> {
         .init();
 
     let opts: Opts = StructOpt::from_args();
-    let cfg_path = opts.workdir.join("client.json");
-    let db_path = opts.workdir.join("client.db");
+    let cfg_path = opts.workdir.join("gateway.json");
+    let db_path = opts.workdir.join("gateway.db");
     let cfg: LnGatewayConfig = load_from_file(&cfg_path);
     let db = sled::open(&db_path)
         .unwrap()
