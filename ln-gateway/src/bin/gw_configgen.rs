@@ -42,7 +42,7 @@ fn main() {
         gateway: LightningGateway {
             mint_pub_key: pk_fed,
             node_pub_key: pk_ln, // FIXME: remove and fetch from LN node?
-            api: "http://127.0.0.1:8080/".to_string(),
+            api: "http://127.0.0.1:8080".to_string(),
         },
     };
 

@@ -27,7 +27,7 @@ done
 
 sleep 10
 
-cargo run --release --bin ln_gateway cfg &
+RUST_LOG=debug cargo run --release --bin ln_gateway cfg &
 
 # peg in
 BTC_CLIENT="bitcoin-cli -regtest -rpcconnect=127.0.0.1 -rpcuser=bitcoin -rpcpassword=bitcoin"
@@ -40,8 +40,9 @@ $BTC_CLIENT sendtoaddress $LN_ADDR 1
 
 bash ./scripts/pegin.sh 0.00099999
 
-LN2_PUB_KEY="$(ln2 getinfo | jq -r '.id')"
+LN2_PUB_KEY="$($LN2 getinfo | jq -r '.id')"
 $LN1 connect $LN2_PUB_KEY@127.0.0.1:9001
+sleep 5
 $LN1 fundchannel $LN2_PUB_KEY 0.1btc
 
 # reissue
@@ -61,8 +62,8 @@ sleep 5
 RECEIVED=$($BTC_CLIENT getreceivedbyaddress $PEG_OUT_ADDR)
 [[ "$RECEIVED" = "0.00000500" ]]
 
-INVOICE="$($LN2 invoice 100000 test test 1m)"
+INVOICE="$($LN2 invoice 100000 test test 1m | jq -r '.bolt11')"
 $MINT_CLIENT ln-pay $INVOICE
 
-INVOICE_STATUS="$(waitinvoice test | jq -r '.status')"
+INVOICE_STATUS="$($LN2 waitinvoice test | jq -r '.status')"
 [[ "$INVOICE_STATUS" = "paid" ]]

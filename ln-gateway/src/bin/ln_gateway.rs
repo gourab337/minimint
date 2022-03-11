@@ -19,6 +19,7 @@ struct Opts {
 }
 
 async fn pay_invoice(mut req: tide::Request<State>) -> tide::Result {
+    debug!("Gateway received outgoing pay request");
     let rng = rand::rngs::OsRng::new().unwrap();
     let contract: ContractId = req.body_json().await?;
     let State { ref gateway } = req.state();
